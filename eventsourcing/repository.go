@@ -45,7 +45,10 @@ func (sr *StreamRepository) ApplyEvent(aggregate AggregateCommon, event proto.Me
 	if eventEnvelope, err := serialize(event); err == nil {
 		if marshalledEnvelope, err := proto.Marshal(eventEnvelope); err == nil {
 			streamName := GetStreamName(aggregate)
-			return sr.Connection.Publish(streamName, marshalledEnvelope)
+			err = sr.Connection.Publish(streamName, marshalledEnvelope)
+			if err == nil {
+				aggregate.HandleStateChange(event)
+			}
 		}
 	}
 	return err

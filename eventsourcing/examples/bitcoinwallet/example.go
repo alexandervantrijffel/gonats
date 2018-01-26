@@ -44,20 +44,3 @@ func CreateWallet(address string, ownerName string) (*BitcoinWallet, error) {
 	err = aggregate.Create(address, ownerName)
 	return aggregate, err
 }
-
-type AggregateInitialized struct {
-	AggregateId string
-}
-
-type TransactionAdded struct {
-}
-
-func testSwitch(e interface{}) {
-	switch e.(type) {
-	case *AggregateInitialized, AggregateInitialized:
-		fmt.Println("init")
-
-	case *TransactionAdded, TransactionAdded:
-		fmt.Println("added")
-	}
-}
