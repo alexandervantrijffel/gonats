@@ -5,3 +5,16 @@ message BitcoinWalletCreated {
     string address = 1;
     string nameOfOwner = 2;
 }
+message DepositMade {
+    Amount amount = 1;
+}
+
+message PaymentMade {
+    string destinationAddress = 1;
+    Amount amount = 2;
+}
+
+message Amount {
+    float amount = 1;
+    string currency = 2;
+}
