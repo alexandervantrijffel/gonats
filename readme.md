@@ -70,3 +70,4 @@ var loadedAgg = &UnitTestAggregate{
 }
 repo.LoadAggregate(loadedAgg)
 ```
+Open [main.go](https://github.com/alexandervantrijffel/gonats/blob/master/main.go) for a more elaborate example of handling deposits and payments in the bitcoin wallet aggregate.
