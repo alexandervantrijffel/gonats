@@ -81,17 +81,13 @@ func (b *BitcoinWallet) MakePayment(destinationAddress string, amount bitcoinwal
 	return b.Repository.ApplyEvent(b, evt)
 }
 
-func CreateWallet(address string, ownerName string) (*BitcoinWallet, error) {
-	repo, err := eventsourcing.NewRepository("gonatseventsourcing_cluster", "test_client1")
-	if err != nil {
-		return nil, err
-	}
+func CreateWallet(repo eventsourcing.Repository, address string, ownerName string) (*BitcoinWallet, error) {
 	aggregate := &BitcoinWallet{
 		AggregateCommonImpl: eventsourcing.AggregateCommonImpl{
 			IdImpl:     xid.New().String(),
 			Repository: repo,
 		},
 	}
-	err = aggregate.Create(address, ownerName)
+	err := aggregate.Create(address, ownerName)
 	return aggregate, err
 }

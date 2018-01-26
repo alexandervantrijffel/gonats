@@ -15,7 +15,7 @@ type Repository interface {
 
 var MainRepository StreamRepository
 
-func NewRepository(stanClusterID, clientID string, options ...stan.Option) (Repository, error) {
+func NewRepository(stanClusterID, clientID string, options ...stan.Option) (*StreamRepository, error) {
 	var err error
 	if (StreamRepository{}) == MainRepository {
 		conn, err := stan.Connect(stanClusterID, clientID, options...)
@@ -62,7 +62,7 @@ func (sr *StreamRepository) ReadAllStreamItems(aggregate AggregateCommon, eventH
 		if len(m.Data) == 0 {
 			fmt.Println("ReadAllStreamItems: Skipping processing of message because the length is 0")
 		} else {
-			eventEnvelope, event, err := deserialize(m.Data)
+			eventEnvelope, event, err := Deserialize(m.Data)
 			_ = eventEnvelope
 			checkErr(err, "ReadAllStreamItems: Deserialize incoming message")
 			eventHandler(event)

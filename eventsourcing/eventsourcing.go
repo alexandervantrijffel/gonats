@@ -37,7 +37,7 @@ func serialize(event interface{}) (*eventsourcingcontracts.EventEnvelope, error)
 func getTypeName(obj interface{}) string {
 	return strings.Replace(fmt.Sprintf("%T", obj), "*", "", -1)
 }
-func deserialize(eventEnvelopeBytes []byte) (eventEnvelope *eventsourcingcontracts.EventEnvelope, event interface{}, err error) {
+func Deserialize(eventEnvelopeBytes []byte) (eventEnvelope *eventsourcingcontracts.EventEnvelope, event interface{}, err error) {
 	envelope := &eventsourcingcontracts.EventEnvelope{}
 	proto.Unmarshal(eventEnvelopeBytes, envelope)
 	eventEnvelope = envelope
@@ -59,7 +59,7 @@ func deserialize(eventEnvelopeBytes []byte) (eventEnvelope *eventsourcingcontrac
 func GetStreamName(aggregate AggregateCommon) string {
 	splittedTypeNameWithoutAggregate := strings.Split(getTypeName(aggregate), ".")
 	typeNameWithoutPackage := splittedTypeNameWithoutAggregate[len(splittedTypeNameWithoutAggregate)-1]
-	return fmt.Sprintf("%s|%s", typeNameWithoutPackage, aggregate.ID())
+	return fmt.Sprintf("%s.%s", typeNameWithoutPackage, aggregate.ID())
 }
 
 func checkErr(err error, desc string) bool {

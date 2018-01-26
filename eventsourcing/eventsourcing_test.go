@@ -58,7 +58,7 @@ func TestSerializeEvent(t *testing.T) {
 	eventEnvelope, err := serialize(evt)
 	assert.Nil(t, err)
 	eventEnvelopeBytes, _ := proto.Marshal(eventEnvelope)
-	deserializedEventEnvelope, deserializedEvent, err := deserialize(eventEnvelopeBytes)
+	deserializedEventEnvelope, deserializedEvent, err := Deserialize(eventEnvelopeBytes)
 	assert.Nil(t, err)
 	typ := reflect.TypeOf(deserializedEvent).Elem().Name()
 	_ = typ
