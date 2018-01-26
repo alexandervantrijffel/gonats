@@ -41,6 +41,15 @@ func (b *BitcoinWallet) HandleStateChange(event interface{}) {
 	}
 }
 ```
+Create a new instance of the BitCoinWallet aggregate 
+```
+myBitcoinWallet := &BitcoinWallet{
+		AggregateCommonImpl: eventsourcing.AggregateCommonImpl{
+			IdImpl:     "1",
+			Repository: repo,
+		},
+	}
+```
 Instantiate a NATS Streaming reposistory with the following line
 ```
 repo, err := eventsourcing.NewRepository()
@@ -56,7 +65,7 @@ The aggregate state can later be retrieved with the following line.
 ```
 var loadedAgg = &UnitTestAggregate{
   	AggregateCommonImpl: AggregateCommonImpl{
-	  IdImpl: aggregateId,
+	  IdImpl: "1",
   },
 }
 repo.LoadAggregate(loadedAgg)
