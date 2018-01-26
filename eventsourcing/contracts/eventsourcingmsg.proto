@@ -1,0 +1,12 @@
+syntax = "proto3";
+package eventsourcingcontracts;
+
+message EventEnvelope {
+  string type_name = 1;
+  bytes message_data = 2;
+}
+
+message TestMessage {
+    string id = 1;
+    int32 i = 2;
+}

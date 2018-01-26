@@ -1,0 +1,1 @@
+protoc eventsourcingmsg.proto --go_out=plugins=grpc:.

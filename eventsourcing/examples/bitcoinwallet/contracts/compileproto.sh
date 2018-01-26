@@ -1,0 +1,1 @@
+protoc bitcoinwalletcontracts.proto --go_out=plugins=grpc:.
