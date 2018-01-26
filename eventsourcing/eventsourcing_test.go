@@ -8,6 +8,7 @@ import (
 
 	"github.com/alexandervantrijffel/gonats/eventsourcing/contracts"
 	"github.com/gogo/protobuf/proto"
+	"github.com/nats-io/go-nats-streaming"
 	"github.com/rs/xid"
 
 	"github.com/stretchr/testify/assert"
@@ -42,7 +43,9 @@ func TestGetStreamNameShouldReturnAggregateNameAndId(t *testing.T) {
 
 func TestLoadAggregate(t *testing.T) {
 	agg := &UnitTestAggregate{AggregateCommonImpl: AggregateCommonImpl{IdImpl: "my-name-is-billy"}}
-	repo, err := NewRepository()
+	repo, err := NewRepository("gonatseventsourcing_cluster",
+		"test_client"+strconv.Itoa(random(0, 99999)),
+		stan.NatsURL(stan.DefaultNatsURL))
 	assert.Nil(t, err)
 	repo.LoadAggregate(agg)
 }
@@ -68,7 +71,9 @@ func TestSerializeEvent(t *testing.T) {
 }
 
 func TestApplyEventAndLoadAggregate(t *testing.T) {
-	repo, err := NewRepository()
+	repo, err := NewRepository("gonatseventsourcing_cluster",
+		"test_client"+strconv.Itoa(random(0, 99999)),
+		stan.NatsURL(stan.DefaultNatsURL))
 	assert.Nil(t, err)
 
 	aggregateId := strconv.Itoa(random(0, 9999999))

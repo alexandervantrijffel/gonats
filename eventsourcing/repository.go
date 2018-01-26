@@ -2,7 +2,6 @@ package eventsourcing
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/golang/protobuf/proto"
@@ -16,12 +15,10 @@ type Repository interface {
 
 var MainRepository StreamRepository
 
-func NewRepository() (Repository, error) {
+func NewRepository(stanClusterID, clientID string, options ...stan.Option) (Repository, error) {
 	var err error
 	if (StreamRepository{}) == MainRepository {
-		conn, err := stan.Connect("gonatseventsourcing_cluster",
-			"test_client"+strconv.Itoa(random(0, 99999)),
-			stan.NatsURL(stan.DefaultNatsURL))
+		conn, err := stan.Connect(stanClusterID, clientID, options...)
 		if checkErr(err, "Failed to connect to NATS Streaming") {
 			return nil, err
 		}

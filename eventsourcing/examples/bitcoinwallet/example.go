@@ -31,7 +31,7 @@ func (b *BitcoinWallet) Create(address string, ownerName string) error {
 }
 
 func CreateWallet(address string, ownerName string) (*BitcoinWallet, error) {
-	repo, err := eventsourcing.NewRepository()
+	repo, err := eventsourcing.NewRepository("gonatseventsourcing_cluster", "test_client1")
 	if err != nil {
 		return nil, err
 	}

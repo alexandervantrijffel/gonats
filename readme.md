@@ -50,9 +50,9 @@ myBitcoinWallet := &BitcoinWallet{
 		},
 	}
 ```
-Instantiate a NATS Streaming reposistory with the following line
+Instantiate a NATS Streaming reposistory with the following line.
 ```
-repo, err := eventsourcing.NewRepository()
+repo, err := eventsourcing.NewRepository("gonatseventsourcing_cluster", "test_client1")
 ```
 Using the repository, the BitcoinWalletCreated event is published as follows.
 ```
