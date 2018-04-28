@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# How to use: 
+# Store this file as .git/hooks/pre-commit and make it executable
+
+# Or, to share the hook with your team, store as .githooks/pre-commit, 
+# make this file executable and run:
+# git config core.hooksPath .githooks
+
+# A pre-commit hook for go projects. In addition to the standard
+# checks from the sample hook, it builds the project with go build,
+# runs the tests (if any), formats the source code with go fmt, and
+# finally go vet to make sure only correct and good code is committed.
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+echo "$DIR started"
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+# If there are no go files, it makes no sense to run the other commands
+# (and indeed, go build would fail). This is undesirable.
+if [ -z "find -iname *.go" ]
+then
+	echo "No go files found, go tools skipped"
+	exit 0
+fi
+
+go build ./...
+if [ $? -ne 0 ]
+then
+	echo "Failed to build project. Please check the output of"
+	echo "go build or run commit with --no-verify if you know"
+	echo "what you are doing."
+	exit 1
+fi
+
+OUTPUT="$(go test ./...)"
+if [ $? -ne 0 ]
+then
+	echo "${OUTPUT}"
+	echo "Failed to run tests. Please check the output of"
+	echo "go test or run commit with --no-verify if you know"
+	echo "what you are doing."
+	exit 1
+fi
+
+goimports -d $(find . -type f -name '*.go' -not -path "**/*/vendor/*")
+
+if [ $? -ne 0 ]
+then
+	echo ""
+	echo "Failed to run go fmt. This shouldn't happen. Please"
+	echo "check its output or run commit with --no-verify if "
+	echo "you know what you are doing."
+	exit 1
+fi
+
+go vet ./... 
+if [ $? -ne 0 ]
+then
+	echo ""
+	echo "go vet has detected potential issues in your project."
+	echo "Please check its output or run commit with --no-verify"
+	echo "if you know what you are doing."
+	exit 1
+fi

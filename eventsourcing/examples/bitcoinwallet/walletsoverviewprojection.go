@@ -6,18 +6,29 @@ import (
 
 	"github.com/alexandervantrijffel/gonats/eventsourcing"
 	"github.com/nats-io/go-nats-streaming"
+	"github.com/nats-io/go-nats-streaming/pb"
 )
 
 func StartWalletsOverviewProjection(repo *eventsourcing.StreamRepository) {
-	repo.Connection.Subscribe("BitcoinWallet.b9lluamvik2kojvb8hl0", func(m *stan.Msg) {
+	receivedMsg := make(chan struct{}, 1)
+	subscription, err := repo.Connection.Subscribe("BitcoinWallet.>", func(m *stan.Msg) {
 		eventEnvelope, event, err := eventsourcing.Deserialize(m.Data)
 		_ = eventEnvelope
 		if err == nil {
-			fmt.Printf("WalletOverviewProjection: Received event of type %s", reflect.TypeOf(event))
+			fmt.Printf("WalletOverviewProjection: Received event of type " + reflect.TypeOf(event).Name())
 		} else {
-			fmt.Println("Failed to deserialize event of type %s", reflect.TypeOf(event))
+			fmt.Println("Failed to deserialize event of type " + reflect.TypeOf(event).Name())
 		}
-	})
-
-	//, stan.StartAt(pb.StartPosition_First)
+		receivedMsg <- struct{}{}
+	}, stan.StartAt(pb.StartPosition_First))
+	if err != nil {
+		fmt.Printf("Failed to subscribe " + err.Error())
+		return
+	}
+	defer subscription.Close()
+	for {
+		select {
+		case <-receivedMsg:
+		}
+	}
 }

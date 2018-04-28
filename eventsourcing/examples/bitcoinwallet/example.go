@@ -36,7 +36,7 @@ func (b *BitcoinWallet) HandleStateChange(event interface{}) {
 			Amount:   b.Balance.Amount - castedEvent.Amount.Amount,
 			Currency: b.Balance.Currency}
 	} else {
-		fmt.Errorf("BitcoinWallet: could not handle unknown event of type %s\n", reflect.TypeOf(event))
+		fmt.Printf("BitcoinWallet: could not handle unknown event of type %s\n", reflect.TypeOf(event))
 	}
 }
 
